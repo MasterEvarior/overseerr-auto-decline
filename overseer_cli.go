@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -57,10 +58,12 @@ func (c *OverseerClient) GetRequest(requestId string) (MediaRequest, error) {
 	return result, nil
 }
 
-func DeclineRequest() {
+func (c *OverseerClient) DeclineRequest(requestId uint) error {
+	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%d/decline", requestId)
 
+	return nil
 }
 
-func DeleteRequest() {
-
+func (c *OverseerClient) DeleteRequest(requestId uint) error {
+	return nil
 }
