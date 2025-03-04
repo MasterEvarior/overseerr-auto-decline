@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -33,37 +32,33 @@ func NewClient(baseUrl string, apiKey string) *OverseerClient {
 	}
 }
 
-func (c *OverseerClient) GetRequest(requestId string) (MediaRequest, error) {
-	url := c.BaseUrl + "/api/v1/request/" + requestId
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return MediaRequest{}, err
-	}
-
-	req.Header.Add("X-Api-Key", c.ApiKey)
-	req.Header.Add("Accept", "application/json")
-	resp, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return MediaRequest{}, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		return MediaRequest{}, errors.New("HTTP request failed with status: " + resp.Status)
-	}
-
-	var result MediaRequest
-	json.NewDecoder(resp.Body).Decode(&result)
-
-	return result, nil
-}
-
 func (c *OverseerClient) DeclineRequest(requestId uint) error {
 	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%d/decline", requestId)
-
-	return nil
+	return c.doRequest("POST", url)
 }
 
 func (c *OverseerClient) DeleteRequest(requestId uint) error {
+	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%d", requestId)
+	return c.doRequest("DELETE", url)
+}
+
+func (c *OverseerClient) doRequest(method string, url string) error {
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("X-Api-Key", c.ApiKey)
+	req.Header.Add("Accept", "*/*")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode >= 400 {
+		return errors.New("HTTP request failed with status: " + resp.Status)
+	}
+
 	return nil
 }
