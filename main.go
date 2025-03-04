@@ -75,7 +75,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload WebhookPayload
 	if err := json.Unmarshal(body, &payload); err != nil {
-		log.Println("Could not unrmarshal body of this request")
+		log.Printf("Could not unmarshal body of this request, body was: %s", string(body[:]))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
