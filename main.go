@@ -24,7 +24,7 @@ func main() {
 
 	log.Printf("The media with the following IDs will be processed: %v", mediaIds)
 	if deleteRequest {
-		log.Println("Request will be deleted after they have been declined, if you wish otherwise unset the 'DELETE_REQUESTS' environment variable")
+		log.Println("Requests will be deleted after they have been declined, if you wish otherwise unset the 'DELETE_REQUESTS' environment variable")
 	}
 
 	http.HandleFunc("/", webhookHandler)

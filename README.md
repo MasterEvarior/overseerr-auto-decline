@@ -1,7 +1,9 @@
 # Overseerr Auto Decline
-![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
+![test workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/test.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
 
-TODO
+[Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). It is however not possible to create a deny-list of movies and TV series, requests of which are automatically declined. 
+
+With this application this is now possible. Download the container. configure the media you ~~absolutely hate~~ you want to automatically decline and voila: never tell your friends "no" manually again.
 
 ## Build
 To build the container yourself, simply clone the repository and then build the container with the provided docker file. You can the run it as described in the section below.
@@ -21,6 +23,7 @@ docker run -d \
   -e API_KEY=eW91cl9hcGlfa2V5Cg== \
   -e MEDIA=8966,24021 \
   --name overseerr-auto-decline \
+  -p 8080:8080 \
   ghcr.io/masterevarior/overseerr-auto-decline:latest
 ```
 This will decline (but not delete) any request for media with the id `8966` or `24021`.
@@ -34,8 +37,16 @@ This will decline (but not delete) any request for media with the id `8966` or `
 | DELETE_REQUESTS | Wether the requests should not only be declined but also be deleted. If this variable is set, they will also be deleted.                                                                                | true                       | ❌        |
 
 ## Configure Webhook
-TODO
+For this application to work, you will have to configure [the webhook](https://docs.overseerr.dev/using-overseerr/notifications/webhooks) inside of Overseerr.
 
+Point the URL to whereever your Docker container is running. Choose `Request Pending Approval` as notification type. Do not choose any other notification type. Finally add this as your JSON payload:
+```json
+{
+    "request_id": "{{request_id}}",
+    "tmdbid": "{{media_tmdbid}}",
+    "tvdbid": "{{media_tvdbid}}"
+}
+```
 
 ## Development, improvements and more
 Pull requests, improvements and issues are always welcome.
