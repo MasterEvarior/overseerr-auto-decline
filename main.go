@@ -28,7 +28,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", webhookHandler)
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Printf("Could not start the server because of the following issue: %v", err)
+	}
 }
 
 func getMedia(name string) []uint {

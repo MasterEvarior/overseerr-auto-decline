@@ -1,5 +1,5 @@
 # Overseerr Auto Decline
-![test workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/test.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
+![quality workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/quality.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
 
 [Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). It is however not possible to create a deny-list of movies and TV series, requests of which are automatically declined. 
 
@@ -48,5 +48,22 @@ Point the URL to whereever your Docker container is running. Choose `Request Pen
 }
 ```
 
-## Development, improvements and more
+## Development
+
+### Linting
+[golangci-lint](https://golangci-lint.run/) is used for linting. Note that the command does not install the required formatters.
+
+```shell
+golangci-lint run
+```
+
+### Git Hooks
+
+There are some hooks for formatting and the like. To use those, execute the following command:
+
+```shell
+git config --local core.hooksPath .githooks/
+```
+
+## Improvements, issues and more
 Pull requests, improvements and issues are always welcome.
