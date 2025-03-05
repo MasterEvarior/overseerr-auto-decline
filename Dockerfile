@@ -7,7 +7,7 @@ RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/overseerr-auto-decline
 
-FROM gcr.io/distroless/base-debian12 AS release-page
+FROM gcr.io/distroless/base-debian12 AS release-stage
 WORKDIR /
 COPY --from=build-stage /app/overseerr-auto-decline /app/overseerr-auto-decline
 USER nonroot:nonroot

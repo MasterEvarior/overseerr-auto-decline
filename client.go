@@ -32,13 +32,13 @@ func NewClient(baseUrl string, apiKey string) *OverseerClient {
 	}
 }
 
-func (c *OverseerClient) DeclineRequest(requestId uint) error {
-	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%d/decline", requestId)
+func (c *OverseerClient) DeclineRequest(requestId string) error {
+	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%s/decline", requestId)
 	return c.doRequest("POST", url)
 }
 
-func (c *OverseerClient) DeleteRequest(requestId uint) error {
-	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%d", requestId)
+func (c *OverseerClient) DeleteRequest(requestId string) error {
+	url := fmt.Sprintf(c.BaseUrl+"/api/v1/request/%s", requestId)
 	return c.doRequest("DELETE", url)
 }
 

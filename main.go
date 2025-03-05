@@ -7,14 +7,13 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	"strconv"
 	"strings"
 )
 
 var apiKey string
 var url string
 var deleteRequest bool
-var mediaIds []uint
+var mediaIds []string
 
 func main() {
 	apiKey = getEnvVar("API_KEY")
@@ -34,18 +33,8 @@ func main() {
 	}
 }
 
-func getMedia(name string) []uint {
-	strings := strings.Split(getEnvVar(name), ",")
-	ints := make([]uint, len(strings))
-
-	for i, s := range strings {
-		num, err := strconv.ParseUint(s, 10, 64)
-		if err != nil {
-			log.Fatalf("Could not convert media id '%s' to a valid number", s)
-		}
-		ints[i] = uint(num)
-	}
-	return ints
+func getMedia(name string) []string {
+	return strings.Split(getEnvVar(name), ",")
 }
 
 func getEnvVar(name string) string {
@@ -57,9 +46,9 @@ func getEnvVar(name string) string {
 }
 
 type WebhookPayload struct {
-	RequestId uint `json:"request_id"`
-	TmDbId    uint `json:"tmdbid"`
-	TvDbId    uint `json:"tvdbid"`
+	RequestId string `json:"request_id"`
+	TmDbId    string `json:"tmdbid"`
+	TvDbId    string `json:"tvdbid"`
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +67,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload WebhookPayload
 	if err := json.Unmarshal(body, &payload); err != nil {
-		log.Printf("Could not unmarshal body of this request, body was: %s", string(body[:]))
+		log.Printf("Could not unmarshal body of this request, body was '%s', error is: %v", string(body[:]), err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -86,20 +75,20 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Successfully received payload on webhook with the following data: %+v", payload)
 
 	if !slices.Contains(mediaIds, payload.TmDbId) && !slices.Contains(mediaIds, payload.TvDbId) {
-		log.Printf("'%d' or '%d' not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
+		log.Printf("'%s' or '%s' not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
 		return
 	}
 
 	overseerrClient := NewClient(url, apiKey)
 	err = overseerrClient.DeclineRequest(payload.RequestId)
 	if err != nil {
-		log.Printf("Could not decline request with the id '%d' because of the following error: %v", payload.RequestId, err)
+		log.Printf("Could not decline request with the id '%s' because of the following error: %v", payload.RequestId, err)
 	}
 
 	if deleteRequest {
 		err = overseerrClient.DeleteRequest(payload.RequestId)
 		if err != nil {
-			log.Printf("Could not delete request with the id '%d' because of the following error: %v", payload.RequestId, err)
+			log.Printf("Could not delete request with the id '%s' because of the following error: %v", payload.RequestId, err)
 		}
 	}
 
