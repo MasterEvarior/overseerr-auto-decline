@@ -1,9 +1,9 @@
 # Overseerr Auto Decline
 ![quality workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/quality.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
 
-[Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). It is however not possible to create a deny-list of movies and TV series, requests of which are automatically declined. 
+[Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). However, it lacks a built-in way to automatically deny requests for specific titles.
 
-With this application this is now possible. Download the container. configure the media you ~~absolutely hate~~ you want to automatically decline and voila: never tell your friends "no" manually again.
+This application solves that problem! Simply download the container, configure the movies and TV shows you want to block, and let it handle the rest. No more manually rejecting requests—just set it and forget it!
 
 ## Build
 To build the container yourself, simply clone the repository and then build the container with the provided docker file. You can the run it as described in the section below.
