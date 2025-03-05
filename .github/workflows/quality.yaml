@@ -1,6 +1,7 @@
 name: 'Quality Check'
 on:
-  push
+  push:
+  workflow_call:
 jobs:
   lint:
     runs-on: ubuntu-latest
