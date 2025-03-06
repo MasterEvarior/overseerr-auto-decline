@@ -12,18 +12,6 @@ type OverseerClient struct {
 	HTTPClient *http.Client
 }
 
-type MediaRequest struct {
-	Id     uint      `json:"id"`
-	Status uint      `json:"status"`
-	Media  MediaInfo `json:"media"`
-}
-
-type MediaInfo struct {
-	Id     uint `json:"id"`
-	TmDbId uint `json:"tmdbId"`
-	TvDbId uint `json:"tvdbId"`
-}
-
 func NewClient(baseUrl string, apiKey string) *OverseerClient {
 	return &OverseerClient{
 		BaseUrl:    baseUrl,
