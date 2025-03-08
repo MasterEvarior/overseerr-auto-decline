@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -10,23 +9,30 @@ import (
 	"strings"
 )
 
-var apiKey string
-var url string
-var deleteRequest bool
-var mediaIds []string
+type handler struct {
+	overseer       *OverseerClient
+	deleteRequests bool
+	bannedMediaIDs []string
+}
 
 func main() {
-	apiKey = getEnvVar("API_KEY")
-	url = getEnvVar("URL")
-	_, deleteRequest = os.LookupEnv("DELETE_REQUESTS")
-	mediaIds = getMedia("MEDIA")
+	apiKey := getEnvVar("API_KEY")
+	url := getEnvVar("URL")
+	_, deleteRequest := os.LookupEnv("DELETE_REQUESTS")
+	mediaIDs := getMedia("MEDIA")
 
-	log.Printf("The media with the following IDs will be processed: %v", mediaIds)
+	log.Printf("The media with the following IDs will be processed: %v", mediaIDs)
 	if deleteRequest {
 		log.Println("Requests will be deleted after they have been declined, if you wish otherwise unset the 'DELETE_REQUESTS' environment variable")
 	}
 
-	http.HandleFunc("/", webhookHandler)
+	h := handler{
+		overseer:       NewClient(url, apiKey),
+		deleteRequests: deleteRequest,
+		bannedMediaIDs: mediaIDs,
+	}
+
+	http.HandleFunc("/", h.webhookHandler)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Printf("Could not start the server because of the following issue: %v", err)
@@ -46,49 +52,40 @@ func getEnvVar(name string) string {
 }
 
 type WebhookPayload struct {
-	RequestId string `json:"request_id"`
+	RequestID string `json:"request_id"`
 	TmDbId    string `json:"tmdbid"`
 	TvDbId    string `json:"tvdbid"`
 }
 
-func webhookHandler(w http.ResponseWriter, r *http.Request) {
+func (h *handler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Printf("%s is not a valid HTTP method for this webhook", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		log.Println("Could not read body of this request")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
 	var payload WebhookPayload
-	if err := json.Unmarshal(body, &payload); err != nil {
-		log.Printf("Could not unmarshal body of this request, body was '%s', error is: %v", string(body[:]), err)
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		log.Printf("Could not unmarshal body of this request: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	log.Printf("Successfully received payload on webhook with the following data: %+v", payload)
-
-	if !slices.Contains(mediaIds, payload.TmDbId) && !slices.Contains(mediaIds, payload.TvDbId) {
-		log.Printf("'%s' or '%s' not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
+	if !slices.Contains(h.bannedMediaIDs, payload.TmDbId) && !slices.Contains(h.bannedMediaIDs, payload.TvDbId) {
+		log.Printf("%q or %q not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
 		return
 	}
 
-	overseerrClient := NewClient(url, apiKey)
-	err = overseerrClient.DeclineRequest(payload.RequestId)
+	err := h.overseer.DeclineRequest(payload.RequestID)
 	if err != nil {
-		log.Printf("Could not decline request with the id '%s' because of the following error: %v", payload.RequestId, err)
+		log.Printf("Could not decline request with the id '%s' because of the following error: %v", payload.RequestID, err)
 	}
 
-	if deleteRequest {
-		err = overseerrClient.DeleteRequest(payload.RequestId)
+	if h.deleteRequests {
+		err = h.overseer.DeleteRequest(payload.RequestID)
 		if err != nil {
-			log.Printf("Could not delete request with the id '%s' because of the following error: %v", payload.RequestId, err)
+			log.Printf("Could not delete request with the id '%s' because of the following error: %v", payload.RequestID, err)
 		}
 	}
 
