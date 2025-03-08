@@ -1,6 +1,8 @@
 name: 'Quality Check'
 on:
   push:
+  pull_request:
+    types: [opened, reopened, edited]
   workflow_call:
 jobs:
   lint:
