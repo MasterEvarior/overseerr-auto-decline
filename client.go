@@ -27,7 +27,7 @@ func (c *OverseerClient) DeclineRequest(requestId string) error {
 
 func (c *OverseerClient) DeleteRequest(requestId string) error {
 	url := fmt.Sprintf("%s/api/v1/request/%s", c.BaseURL, requestId)
-	return c.doRequest(http.MethodGet, url)
+	return c.doRequest(http.MethodDelete, url)
 }
 
 func (c *OverseerClient) doRequest(method string, url string) error {

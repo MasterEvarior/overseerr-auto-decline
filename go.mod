@@ -1,3 +1,3 @@
-module github.com/MasterEvarior/i-dont-want-your-movie
+module github.com/MasterEvarior/overseerr-auto-decline
 
 go 1.23.6
