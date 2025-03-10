@@ -5,3 +5,5 @@ linters:
     - bodyclose
     - gci
     - gocognit
+run:
+  allow-parallel-runners: true
