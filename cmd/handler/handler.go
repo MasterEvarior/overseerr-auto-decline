@@ -1,16 +1,18 @@
-package main
+package handler
 
 import (
 	"encoding/json"
 	"log"
 	"net/http"
 	"slices"
+
+	"github.com/MasterEvarior/overseerr-auto-decline/cmd/client"
 )
 
 type Handler struct {
-	overseer       *OverseerClient
-	deleteRequests bool
-	bannedMediaIDs []string
+	OverseerrClient *client.OverseerClient
+	DeleteRequests  bool
+	BannedMediaIDs  []string
 }
 
 type WebhookPayload struct {
@@ -19,7 +21,7 @@ type WebhookPayload struct {
 	TvDbId    string `json:"tvdbid"`
 }
 
-func (h *Handler) webhookHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Printf("%s is not a valid HTTP method for this webhook", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -34,12 +36,12 @@ func (h *Handler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("Successfully received payload on webhook with the following data: %+v", payload)
-	if !slices.Contains(h.bannedMediaIDs, payload.TmDbId) && !slices.Contains(h.bannedMediaIDs, payload.TvDbId) {
+	if !slices.Contains(h.BannedMediaIDs, payload.TmDbId) && !slices.Contains(h.BannedMediaIDs, payload.TvDbId) {
 		log.Printf("%q or %q not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
 		return
 	}
 
-	err := h.overseer.DeclineRequest(payload.RequestID)
+	err := h.OverseerrClient.DeclineRequest(payload.RequestID)
 	if err != nil {
 		log.Printf("Could not decline request with the id '%s' because of the following error: %v", payload.RequestID, err)
 		http.Error(w, "Internal Server Error", 500)
@@ -47,8 +49,8 @@ func (h *Handler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Print("Successfully declined the request")
 
-	if h.deleteRequests {
-		err = h.overseer.DeleteRequest(payload.RequestID)
+	if h.DeleteRequests {
+		err = h.OverseerrClient.DeleteRequest(payload.RequestID)
 		if err != nil {
 			log.Printf("Could not delete request with the id '%s' because of the following error: %v", payload.RequestID, err)
 			http.Error(w, "Internal Server Error", 500)

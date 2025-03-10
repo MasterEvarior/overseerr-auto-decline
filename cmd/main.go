@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/MasterEvarior/overseerr-auto-decline/cmd/client"
+	"github.com/MasterEvarior/overseerr-auto-decline/cmd/handler"
 )
 
 func main() {
@@ -18,13 +21,13 @@ func main() {
 		log.Println("Requests will be deleted after they have been declined, if you wish otherwise unset the 'DELETE_REQUESTS' environment variable")
 	}
 
-	h := Handler{
-		overseer:       NewClient(url, apiKey),
-		deleteRequests: deleteRequest,
-		bannedMediaIDs: mediaIDs,
+	h := handler.Handler{
+		OverseerrClient: client.NewClient(url, apiKey),
+		DeleteRequests:  deleteRequest,
+		BannedMediaIDs:  mediaIDs,
 	}
 
-	http.HandleFunc("/", h.webhookHandler)
+	http.HandleFunc("/", h.WebhookHandler)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Printf("Could not start the server because of the following issue: %v", err)
