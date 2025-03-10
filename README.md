@@ -1,4 +1,5 @@
 # Overseerr Auto Decline
+
 ![quality workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/quality.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
 
 [Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). However, it lacks a built-in way to automatically deny requests for specific titles.
@@ -6,17 +7,23 @@
 This application solves that problem! Simply download the container, configure the movies and TV shows you want to block, and let it handle the rest. No more manually rejecting requests—just set it and forget it!
 
 ## Build
+
 To build the container yourself, simply clone the repository and then build the container with the provided docker file. You can the run it as described in the section below.
+
 ```shell
 docker build . --tag overseerr-auto-decline
 ```
+
 Alternatively you can build the binary directly with Go.
+
 ```shell
 go build -o ./overseerr-auto-decline
 ```
 
 ## Run
+
 To run the docker container, you have to give it a couple of environment variables.
+
 ```shell
 docker run -d \
   -e URL=https://your.overseerr.com \
@@ -26,9 +33,11 @@ docker run -d \
   -p 8080:8080 \
   ghcr.io/masterevarior/overseerr-auto-decline:latest
 ```
+
 This will decline (but not delete) any request for media with the id `8966` or `24021`.
 
 ### Environment Variables
+
 | Name            | Description                                                                                                                                                                                             | Example                    | Mandatory |
 |-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|-----------|
 | URL             | The URL to your Overseerr instance.                                                                                                                                                                     | https://your.overseerr.com | ✅        |
@@ -37,9 +46,11 @@ This will decline (but not delete) any request for media with the id `8966` or `
 | DELETE_REQUESTS | Wether the requests should not only be declined but also be deleted. If this variable is set, they will also be deleted.                                                                                | true                       | ❌        |
 
 ## Configure Webhook
+
 For this application to work, you will have to configure [the webhook](https://docs.overseerr.dev/using-overseerr/notifications/webhooks) inside of Overseerr.
 
 Point the URL to whereever your Docker container is running. Choose `Request Pending Approval` as notification type. Do not choose any other notification type. Finally add this as your JSON payload:
+
 ```json
 {
     "request_id": "{{request_id}}",
@@ -51,10 +62,11 @@ Point the URL to whereever your Docker container is running. Choose `Request Pen
 ## Development
 
 ### Linting
-[golangci-lint](https://golangci-lint.run/) is used for linting. Note that the command does not install the required formatters.
+
+Run all the linters with the treefmt command. Note that the command does not install the required formatters.
 
 ```shell
-golangci-lint run
+treefmt
 ```
 
 ### Git Hooks
@@ -66,4 +78,5 @@ git config --local core.hooksPath .githooks/
 ```
 
 ## Improvements, issues and more
+
 Pull requests, improvements and issues are always welcome.
