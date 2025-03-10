@@ -35,6 +35,11 @@ func (h *Handler) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if payload.RequestID == "" {
+		http.Error(w, "Missing required field: request_id", http.StatusBadRequest)
+		return
+	}
+
 	log.Printf("Successfully received payload on webhook with the following data: %+v", payload)
 	if !slices.Contains(h.BannedMediaIDs, payload.TmDbId) && !slices.Contains(h.BannedMediaIDs, payload.TvDbId) {
 		log.Printf("%q or %q not found inside the configured media IDs, doing nothing", payload.TmDbId, payload.TvDbId)
