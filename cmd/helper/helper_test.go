@@ -1,8 +1,9 @@
 package helper
 
 import (
-	"slices"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetMedia(t *testing.T) {
@@ -10,9 +11,15 @@ func TestGetMedia(t *testing.T) {
 
 	result := GetMedia("TEST_MEDIA")
 
-	if !slices.Equal(result, []string{"12", "323", "4"}) {
-		t.Fatalf("'%v' does not equal the expected values", result)
-	}
+	assert.EqualValues(t, []string{"12", "323", "4"}, result)
+}
+
+func TestGetMedia_EmptyString(t *testing.T) {
+	t.Setenv("TEST_MEDIA", "")
+
+	result := GetMedia("TEST_MEDIA")
+
+	assert.EqualValues(t, []string{""}, result)
 }
 
 func TestGetEnvVar(t *testing.T) {
@@ -20,7 +27,5 @@ func TestGetEnvVar(t *testing.T) {
 
 	result := GetEnvVar("TEST_VAR")
 
-	if result != "my-value" {
-		t.Fatalf("'%v' does not equal the expected value", result)
-	}
+	assert.Equal(t, "my-value", result)
 }
