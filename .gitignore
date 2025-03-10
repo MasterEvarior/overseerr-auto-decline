@@ -57,3 +57,6 @@
 
 # Go workspace file
 go.work
+
+### Nix & direnv ###
+.direnv

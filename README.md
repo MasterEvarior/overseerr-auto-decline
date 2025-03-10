@@ -77,6 +77,14 @@ There are some hooks for formatting and the like. To use those, execute the foll
 git config --local core.hooksPath .githooks/
 ```
 
+### Nix
+
+If you are using [NixOS or the Nix package manager](https://nixos.org/), there is a dev shell available for your convenience. This will install Go, everything needed for formatting and set some default environment variables. Start it with this command:
+
+```shell
+nix develop
+```
+
 ## Improvements, issues and more
 
 Pull requests, improvements and issues are always welcome.
