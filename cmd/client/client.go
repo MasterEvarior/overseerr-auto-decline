@@ -7,8 +7,8 @@ import (
 )
 
 type OverseerClient interface {
-	DeclineRequest() error
-	DeleteRequest() error
+	DeclineRequest(string) error
+	DeleteRequest(string) error
 }
 
 type OverseerClientImpl struct {

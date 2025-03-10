@@ -10,7 +10,7 @@ import (
 )
 
 type Handler struct {
-	OverseerrClient *client.OverseerClient
+	OverseerrClient client.OverseerClient
 	DeleteRequests  bool
 	BannedMediaIDs  []string
 }
