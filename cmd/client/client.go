@@ -43,6 +43,7 @@ func (c *OverseerClient) doRequest(method string, url string) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
 		return errors.New("HTTP request failed with status: " + resp.Status)

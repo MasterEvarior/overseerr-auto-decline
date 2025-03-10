@@ -1,4 +1,4 @@
-package main
+package helper
 
 import (
 	"slices"
@@ -8,7 +8,7 @@ import (
 func TestGetMedia(t *testing.T) {
 	t.Setenv("TEST_MEDIA", "12,323,4")
 
-	result := getMedia("TEST_MEDIA")
+	result := GetMedia("TEST_MEDIA")
 
 	if !slices.Equal(result, []string{"12", "323", "4"}) {
 		t.Fatalf("'%v' does not equal the expected values", result)
@@ -18,7 +18,7 @@ func TestGetMedia(t *testing.T) {
 func TestGetEnvVar(t *testing.T) {
 	t.Setenv("TEST_VAR", "my-value")
 
-	result := getEnvVar("TEST_VAR")
+	result := GetEnvVar("TEST_VAR")
 
 	if result != "my-value" {
 		t.Fatalf("'%v' does not equal the expected value", result)

@@ -14,7 +14,9 @@
     {
       devShells."${x86}".default = pkgs.mkShell {
         packages = with pkgs; [
+          # Golang
           go
+          gotools
 
           # Formatters
           treefmt

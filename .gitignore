@@ -45,6 +45,7 @@
 *.dll
 *.so
 *.dylib
+overseerr-auto-decline
 
 # Test binary, built with `go test -c`
 *.test

@@ -10,11 +10,23 @@ options = []
 excludes = []
 includes = ["*.yml","*.yaml"]
 
+[formatter.jsonfmt]
+command = "jsonfmt"
+options = ["-w"]
+excludes = []
+includes = ["*.json","*.jsonc"]
+
 [formatter.beautysh]
 command = "beautysh"
 options = ["-i","2"]
 excludes = []
-includes = ["*.sh", "pre-commit"]
+includes = ["*.sh"]
+
+[formatter.typstfmt]
+command = "typstfmt"
+options = ["--edit"]
+excludes = []
+includes = ["*.typ","*.typst"]
 
 [formatter.deadnix]
 command = "deadnix"
@@ -28,6 +40,18 @@ options = []
 excludes = []
 includes = ["*.nix"]
 
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+excludes = []
+includes = ["*.cjs","*.css","*.html","*.js","*.jsx","*.mdx","*.mjs","*.scss","*.ts","*.tsx","*.vue"]
+
+[formatter.golang]
+command = "golangci-lint"
+options = ["run", "-c", ".golangci.yaml"]
+excludes = []
+includes = ["*.go"]
+
 [global]
-excludes = ["*.png","*.jpg","*.jpeg", ".envrc"]
+excludes = ["*.png","*.jpg","*.jpeg"]
 

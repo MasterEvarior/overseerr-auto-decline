@@ -4,17 +4,17 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/MasterEvarior/overseerr-auto-decline/cmd/client"
 	"github.com/MasterEvarior/overseerr-auto-decline/cmd/handler"
+	"github.com/MasterEvarior/overseerr-auto-decline/cmd/helper"
 )
 
 func main() {
-	apiKey := getEnvVar("API_KEY")
-	url := getEnvVar("URL")
+	apiKey := helper.GetEnvVar("API_KEY")
+	url := helper.GetEnvVar("URL")
 	_, deleteRequest := os.LookupEnv("DELETE_REQUESTS")
-	mediaIDs := getMedia("MEDIA")
+	mediaIDs := helper.GetMedia("MEDIA")
 
 	log.Printf("The media with the following IDs will be processed: %v", mediaIDs)
 	if deleteRequest {
@@ -32,16 +32,4 @@ func main() {
 	if err != nil {
 		log.Printf("Could not start the server because of the following issue: %v", err)
 	}
-}
-
-func getMedia(name string) []string {
-	return strings.Split(getEnvVar(name), ",")
-}
-
-func getEnvVar(name string) string {
-	value, ok := os.LookupEnv(name)
-	if !ok {
-		log.Fatalf("Environment variable '%s' was not defined", name)
-	}
-	return value
 }
