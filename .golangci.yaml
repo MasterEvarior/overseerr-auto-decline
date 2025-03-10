@@ -5,6 +5,3 @@ linters:
     - bodyclose
     - gci
     - gocognit
-issues:
-  exclude:
-    - "typechecking error: named files must all be in one directory; have cmd/client and cmd/handler"

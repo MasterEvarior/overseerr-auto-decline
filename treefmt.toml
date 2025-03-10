@@ -46,12 +46,31 @@ options = ["--write"]
 excludes = []
 includes = ["*.cjs","*.css","*.html","*.js","*.jsx","*.mdx","*.mjs","*.scss","*.ts","*.tsx","*.vue"]
 
-[formatter.golang]
+# The following is an ugly hack, because golangci-lint does not play nice with single files and packages at the same time
+[formatter.golang-helper]
+command = "golangci-lint"
+options = ["run", "-c", ".golangci.yaml"]
+excludes = ["main.go", "cmd/client/*", "cmd/handler/*"]
+includes = ["*.go"]
+
+[formatter.golang-client]
+command = "golangci-lint"
+options = ["run", "-c", ".golangci.yaml"]
+excludes = ["main.go", "cmd/helper/*", "cmd/handler/*"]
+includes = ["*.go"]
+
+[formatter.golang-handler]
+command = "golangci-lint"
+options = ["run", "-c", ".golangci.yaml"]
+excludes = ["main.go", "cmd/helper/*", "cmd/client/*"]
+includes = ["*.go"]
+
+[formatter.golang-main]
 command = "golangci-lint"
 options = ["run", "-c", ".golangci.yaml"]
 excludes = []
-includes = ["*.go"]
+includes = ["./*.go"]
 
 [global]
-excludes = ["*.png","*.jpg","*.jpeg"]
+excludes = ["*.png","*.jpg","*.jpeg", "LICENSE"]
 

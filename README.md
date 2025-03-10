@@ -85,6 +85,8 @@ If you are using [NixOS or the Nix package manager](https://nixos.org/), there i
 nix develop
 ```
 
+If you happen to use [nix-direnv](https://github.com/nix-community/nix-direnv), this is also supported.
+
 ## Improvements, issues and more
 
 Pull requests, improvements and issues are always welcome.
