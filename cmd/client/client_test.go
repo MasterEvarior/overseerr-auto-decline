@@ -19,7 +19,7 @@ func TestDeclineRequest(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClient{server.URL, "api-key-123", server.Client()}
+	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
 	err := client.DeclineRequest("123")
 	assert.Nil(t, err)
 }
@@ -35,7 +35,7 @@ func TestDeclineRequest_WithError(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClient{server.URL, "api-key-123", server.Client()}
+	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
 	err := client.DeclineRequest("123")
 	assert.Error(t, err)
 }
@@ -51,7 +51,7 @@ func TestDeleteRequest(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClient{server.URL, "api-key-123", server.Client()}
+	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
 	err := client.DeleteRequest("123")
 	assert.Nil(t, err)
 }
@@ -67,7 +67,7 @@ func TestDeleteRequest_WithError(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClient{server.URL, "api-key-123", server.Client()}
+	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
 	err := client.DeleteRequest("123")
 	assert.Error(t, err)
 }

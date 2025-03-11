@@ -49,7 +49,7 @@ func (h *Handler) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	err := h.OverseerrClient.DeclineRequest(payload.RequestID)
 	if err != nil {
 		log.Printf("Could not decline request with the id '%s' because of the following error: %v", payload.RequestID, err)
-		http.Error(w, "Internal Server Error", 500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	log.Print("Successfully declined the request")
@@ -58,7 +58,7 @@ func (h *Handler) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		err = h.OverseerrClient.DeleteRequest(payload.RequestID)
 		if err != nil {
 			log.Printf("Could not delete request with the id '%s' because of the following error: %v", payload.RequestID, err)
-			http.Error(w, "Internal Server Error", 500)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		log.Print("Successfully deleted the request")

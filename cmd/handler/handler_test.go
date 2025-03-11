@@ -16,15 +16,13 @@ type OverseerClientMock struct {
 }
 
 func (m *OverseerClientMock) DeclineRequest(requestID string) error {
-	m.Called()
-
-	return nil
+	args := m.Called(requestID)
+	return args.Error(0)
 }
 
 func (m *OverseerClientMock) DeleteRequest(requestID string) error {
-	m.Called()
-
-	return nil
+	args := m.Mock.Called(requestID)
+	return args.Error(0)
 }
 
 func TestWebhookHandler_InvalidMethod(t *testing.T) {
@@ -56,7 +54,9 @@ func TestWebhookHandler_BadRequestBody(t *testing.T) {
 }
 
 func TestWebhookHandler_NoBannedMediaIDs(t *testing.T) {
-	mockClient := &OverseerClientMock{}
+	mockClient := &OverseerClientMock{
+		mock.Mock{},
+	}
 	handler := &Handler{
 		OverseerrClient: mockClient,
 		BannedMediaIDs:  []string{"123"},
@@ -75,7 +75,9 @@ func TestWebhookHandler_NoBannedMediaIDs(t *testing.T) {
 }
 
 func TestWebhookHandler_DeclineRequest_Success(t *testing.T) {
-	mockClient := &OverseerClientMock{}
+	mockClient := &OverseerClientMock{
+		mock.Mock{},
+	}
 	mockClient.On("DeclineRequest", mock.AnythingOfType("string")).Return(nil)
 	handler := &Handler{
 		OverseerrClient: mockClient,
@@ -95,8 +97,10 @@ func TestWebhookHandler_DeclineRequest_Success(t *testing.T) {
 }
 
 func TestWebhookHandler_DeclineRequest_Failure(t *testing.T) {
-	mockClient := &OverseerClientMock{}
-	mockClient.On("DeclineRequest", mock.AnythingOfType("string")).Return(errors.New("Error while declining request"))
+	mockClient := &OverseerClientMock{
+		mock.Mock{},
+	}
+	mockClient.On("DeclineRequest", mock.Anything).Return(errors.New("Error while declining request"))
 	handler := &Handler{
 		OverseerrClient: mockClient,
 		BannedMediaIDs:  []string{"999"},
@@ -115,7 +119,9 @@ func TestWebhookHandler_DeclineRequest_Failure(t *testing.T) {
 }
 
 func TestWebhookHandler_DeleteRequest_Success(t *testing.T) {
-	mockClient := &OverseerClientMock{}
+	mockClient := &OverseerClientMock{
+		mock.Mock{},
+	}
 	mockClient.On("DeclineRequest", mock.AnythingOfType("string")).Return(nil)
 	mockClient.On("DeleteRequest", mock.AnythingOfType("string")).Return(nil)
 	handler := &Handler{
@@ -136,9 +142,11 @@ func TestWebhookHandler_DeleteRequest_Success(t *testing.T) {
 }
 
 func TestWebhookHandler_DeleteRequest_Failure(t *testing.T) {
-	mockClient := &OverseerClientMock{}
-	mockClient.On("DeclineRequest", mock.AnythingOfType("string")).Return(nil)
-	mockClient.On("DeleteRequest", mock.AnythingOfType("string")).Return(errors.New("Error while deleting request"))
+	mockClient := &OverseerClientMock{
+		mock.Mock{},
+	}
+	mockClient.On("DeclineRequest", mock.Anything).Return(nil)
+	mockClient.On("DeleteRequest", mock.Anything).Return(errors.New("Error while deleting request"))
 	handler := &Handler{
 		OverseerrClient: mockClient,
 		BannedMediaIDs:  []string{"999"},
@@ -152,6 +160,6 @@ func TestWebhookHandler_DeleteRequest_Failure(t *testing.T) {
 
 	assert.Equal(t, http.StatusInternalServerError, rec.Code)
 	mockClient.AssertCalled(t, "DeclineRequest", "1")
-	mockClient.AssertNotCalled(t, "DeleteRequest", "1")
+	mockClient.AssertCalled(t, "DeleteRequest", "1")
 	mockClient.AssertExpectations(t)
 }
