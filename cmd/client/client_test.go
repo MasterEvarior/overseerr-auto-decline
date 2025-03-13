@@ -8,6 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func getClientImpl(server *httptest.Server) *OverseerClientImpl {
+	return &OverseerClientImpl{
+		BaseURL:    server.URL,
+		APIKey:     "api-key-123",
+		HTTPClient: server.Client()}
+}
+
 func TestDeclineRequest(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		assert.EqualValues(t, req.URL.String(), "/api/v1/request/123/decline")
@@ -19,7 +26,7 @@ func TestDeclineRequest(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
+	client := getClientImpl(server)
 	err := client.DeclineRequest("123")
 	assert.Nil(t, err)
 }
@@ -35,7 +42,7 @@ func TestDeclineRequest_WithError(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
+	client := getClientImpl(server)
 	err := client.DeclineRequest("123")
 	assert.Error(t, err)
 }
@@ -51,7 +58,7 @@ func TestDeleteRequest(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
+	client := getClientImpl(server)
 	err := client.DeleteRequest("123")
 	assert.Nil(t, err)
 }
@@ -67,7 +74,7 @@ func TestDeleteRequest_WithError(t *testing.T) {
 
 	defer server.Close()
 
-	client := OverseerClientImpl{server.URL, "api-key-123", server.Client()}
+	client := getClientImpl(server)
 	err := client.DeleteRequest("123")
 	assert.Error(t, err)
 }
