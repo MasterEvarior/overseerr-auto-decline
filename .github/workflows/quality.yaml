@@ -24,7 +24,7 @@ jobs:
         run: go install github.com/google/yamlfmt/cmd/yamlfmt@latest
       - name: Install golangci-lint
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
       - uses: CfirTsabari/actions-pipx@v1
       - name: Install mdformat
         run: pipx install mdformat==0.7.18
