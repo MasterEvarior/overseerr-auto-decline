@@ -31,7 +31,7 @@ jobs:
       - name: Install beautysh
         run: pipx install beautysh
       - name: Run treefmt
-        uses: isbecker/treefmt-action@v1
+        uses: isbecker/treefmt-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           version: 'latest'
