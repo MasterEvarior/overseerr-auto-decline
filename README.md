@@ -2,6 +2,10 @@
 
 ![quality workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/quality.yaml/badge.svg) ![release workflow](https://github.com/MasterEvarior/overseerr-auto-decline/actions/workflows/publish.yaml/badge.svg)
 
+> [!WARNING]  
+> Overseer has migrated to Seer, which includes a blocklist. This renders the project obsolete.
+> For this reason, this project has been retired.
+
 [Overseerr](https://overseerr.dev/) is a fantastic application, which allows your friends to request movies and TV series for your [Plex Server](https://www.plex.tv/). However, it lacks a built-in way to automatically deny requests for specific titles.
 
 This application solves that problem! Simply download the container, configure the movies and TV shows you want to block, and let it handle the rest. No more manually rejecting requests—just set it and forget it!
